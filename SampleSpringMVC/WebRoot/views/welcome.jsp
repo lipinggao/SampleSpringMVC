@@ -1,5 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="ISO-8859-1"%>
-<%@ page import="com.test.model.TestViewModel"%>
+<%@ page import="com.test.view.TestViewModel"%>
 <%
  TestViewModel vm = (TestViewModel) request.getAttribute("ViewModel");
    String msg = vm.getMsg();

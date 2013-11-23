@@ -12,7 +12,62 @@
             http://www.springframework.org/schema/util  http://www.springframework.org/schema/util/spring-util-2.5.xsd
             http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd ">
             
-	<context:component-scan base-package="com.test.dao" />
-	<context:component-scan base-package="com.test.service" />
+   <!-- load config -->
+	<bean id="propertyConfigurerCore"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="order" value="1" />
+		<property name="locations">
+			<list>
+				<value>/WEB-INF/config/*.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="dataSource_test" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="jdbcUrl" value="${jdbc.test.url}" />
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="user" value="${jdbc.test.username}" />
+		<property name="password" value="${jdbc.test.password}" />
+		<property name="maxPoolSize" value="50" />
+		<property name="acquireIncrement" value="3" />
+		<property name="acquireRetryAttempts" value="3" />
+		<property name="maxIdleTime" value="1800" />
+		<property name="idleConnectionTestPeriod" value="300"/> 
+	</bean>
+	
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource_test" />
+		<!-- 实体类 --> 
+        <property name="packagesToScan"> 
+            <list> 
+                <value>com.test.model</value> 
+            </list> 
+        </property> 
+		<property name="namingStrategy">
+			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+		</property>
+		<property name="hibernateProperties"> 
+            <props> 
+               <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>          
+               <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+               <prop key="hibernate.show_sql">${hibernate.show_sql}</prop> 
+               <prop key="hibernate.format_sql">true</prop> 
+               <prop key="hibernate.cache.use_second_level_cache">false</prop> 
+               <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop> 
+               <prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop> 
+            </props> 
+        </property> 
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+            
+	<context:component-scan base-package="com.test.dao.impl" />
+	<context:component-scan base-package="com.test.service.impl" />
 
 </beans>

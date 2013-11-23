@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.test.model.TestViewModel;
 import com.test.service.TestService;
+import com.test.view.TestViewModel;
 
 @Controller
 public class TestController {
